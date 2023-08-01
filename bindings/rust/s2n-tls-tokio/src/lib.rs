@@ -87,6 +87,18 @@ where
         conn.as_mut().set_server_name(domain)?;
         TlsStream::open(conn, stream).await
     }
+    
+    pub async fn connect_sni_disabled<S>(
+        &self,
+        domain: &str,
+        stream: S,
+    ) -> Result<TlsStream<S, B::Output>, Error>
+    where
+        S: AsyncRead + AsyncWrite + Unpin,
+    {
+        let mut conn = self.builder.build_connection(Mode::Client)?;
+        TlsStream::open(conn, stream).await
+    }
 }
 
 struct TlsHandshake<'a, S, C>
